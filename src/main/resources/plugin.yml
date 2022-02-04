@@ -1,0 +1,10 @@
+name: VulcanSpectate
+version: '${project.version}'
+main: xyz.arr4nn.vulcanspectate.VulcanSpectate
+depend:
+  - Vulcan
+api-version: 1.18
+description: Used to spectate players cheating detected by Vulcan
+commands:
+  vs:
+    description: Spectate a cheating player
