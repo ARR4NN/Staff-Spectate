@@ -30,8 +30,12 @@ public class spectatePlayer extends SubCommand {
   @Override
   public void perform(Player player, String[] args) {
     if(args.length > 1) {
-      vanishedPlayers.put(player.getUniqueId(), new VanishData(player.getGameMode(), player.getLocation()));
       Player target = Bukkit.getPlayer(args[1]);
+      if(target == player){
+        player.sendMessage(ChatColor.RED+"You can't spectate yourself silly. :-(");
+        return;
+      }
+      vanishedPlayers.put(player.getUniqueId(), new VanishData(player.getGameMode(), player.getLocation()));
       player.setGameMode(GameMode.SPECTATOR);
       player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Spectating "+target.getDisplayName()));
       player.teleport(target.getLocation());

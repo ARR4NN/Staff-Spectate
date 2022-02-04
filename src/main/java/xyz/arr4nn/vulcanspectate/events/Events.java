@@ -11,6 +11,7 @@ public class Events implements Listener {
   @EventHandler
   public static void onPlayerDisconnect(PlayerQuitEvent event){
       VanishData vanishData = vanishedPlayers.get(event.getPlayer().getUniqueId());
+      if(vanishData == null) return;
       if(vanishData.getLocation().length() > 1){
         event.getPlayer().teleport(vanishData.getLocation());
         event.getPlayer().setGameMode(vanishData.getGameMode());
