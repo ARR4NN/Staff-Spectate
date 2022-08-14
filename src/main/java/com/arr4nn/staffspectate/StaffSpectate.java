@@ -65,9 +65,6 @@ public final class StaffSpectate extends JavaPlugin implements Listener {
       }
     });
 
-//    int pluginId = 99739;
-//    Metrics metrics = new Metrics(this, pluginId);
-
     getLogger().info(ChatColor.translateAlternateColorCodes('&',"&a[Staff-Spectate] Plugin Version: "+configVersion +" has been enabled!"));
 
   }
