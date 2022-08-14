@@ -1,10 +1,12 @@
-name: VulcanSpectate
+name: StaffSpectate
 version: '${project.version}'
-main: xyz.arr4nn.vulcanspectate.VulcanSpectate
-depend:
-  - Vulcan
-api-version: 1.18
-description: Used to spectate players cheating detected by Vulcan
+main: com.arr4nn.staffspectate.StaffSpectate
+api-version: 1.15
+description: Let Staff spectate players without loosing their progress.
 commands:
-  vs:
-    description: Spectate a cheating player
+  ss:
+    description: Spectate a player
+    aliases:
+      - staffspectate
+      - spectate
+      - sspectate

@@ -1,4 +1,4 @@
-package xyz.arr4nn.vulcanspectate.commands;
+package com.arr4nn.staffspectate.commands;
 
 import org.bukkit.entity.Player;
 

@@ -1,4 +1,4 @@
-package xyz.arr4nn.vulcanspectate;
+package com.arr4nn.staffspectate;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
