@@ -10,3 +10,11 @@ commands:
       - staffspectate
       - spectate
       - sspectate
+    permission: staffspectate.use
+  ssadmin:
+    description: Admin managment of the plugin
+    aliases:
+      - staffspectateadmin
+      - spectateadmin
+      - sspectateadmin
+    permission: staffspectate.admin
