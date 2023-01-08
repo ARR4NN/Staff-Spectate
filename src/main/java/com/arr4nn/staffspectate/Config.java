@@ -3,6 +3,7 @@ package com.arr4nn.staffspectate;
 public class Config {
     public static final String RETURN_TO_LOCATION = "return-to-location";
     public static final String NOTIFY_UPDATES = "notify_updates";
+    public static final String LOG_TO_FILE = "log_to_file";
     public static final String CMD_NOPERM = "language.commands.no-permissions";
     public static final String SELF_SPECTATE = "language.commands.spectate.self-spectate";
     public static final String NOW_SPECTATING_SPECTATE = "language.commands.spectate.spectating";
@@ -19,6 +20,7 @@ public class Config {
     public Config(StaffSpectate main) {
         main.getConfig().addDefault(RETURN_TO_LOCATION,true);
         main.getConfig().addDefault(NOTIFY_UPDATES,true);
+        main.getConfig().addDefault(LOG_TO_FILE,true);
         main.getConfig().addDefault(CMD_NOPERM,"<red>You don't have enough permissions to do this!");
         main.getConfig().addDefault(SELF_SPECTATE,"<red>You can't spectate yourself.");
         main.getConfig().addDefault(NOW_SPECTATING_SPECTATE,"<green>You are now spectating {user}.");

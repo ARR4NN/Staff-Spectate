@@ -1,6 +1,7 @@
 package com.arr4nn.staffspectate.commands;
 
 import com.arr4nn.staffspectate.Config;
+import com.arr4nn.staffspectate.Logger;
 import com.arr4nn.staffspectate.StaffSpectate;
 import com.arr4nn.staffspectate.VanishData;
 import net.kyori.adventure.audience.Audience;
@@ -40,19 +41,32 @@ public class spectateCommand implements CommandExecutor, TabCompleter {
         Audience a = plugin.adventure().player(player);
         MiniMessage mm = MiniMessage.miniMessage();
         FileConfiguration config = plugin.getConfig();
-
+            if(!(args.length > 0)){
+                a.sendMessage(mm.deserialize(Objects.requireNonNull(plugin.getConfig().getString(Config.NO_USER_SPECTATE))));
+                return false;
+            }
             if (args[0].equals("leave")) {
+                if(!player.hasPermission("staffspectate.leave")){
+                    player.sendMessage(plugin.getConfig().getString(Config.CMD_NOPERM));
+                    return false;
+                }
                 // Is the leave command
-                if (player.getGameMode() != GameMode.SPECTATOR) {
+                VanishData vanishData = vanishedPlayers.get(player.getUniqueId());
+                if (vanishData == null) {
                     a.sendMessage(mm.deserialize(Objects.requireNonNull(plugin.getConfig().getString(Config.NOT_SPECTATING))));
                     return false;
                 }
-                VanishData vanishData = vanishedPlayers.get(player.getUniqueId());
+                Logger.log(player.getName()+" used the leave spectate command and was returned to original location and gamemode.");
                 player.teleport(vanishData.getLocation());
                 player.setGameMode(vanishData.getGameMode());
                 a.sendMessage(mm.deserialize(Objects.requireNonNull(plugin.getConfig().getString(Config.SPECTATE_END))));
+                vanishedPlayers.remove(player.getUniqueId());
 
             } else if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(args[0]))) {
+                if(!player.hasPermission("staffspectate.spectate")){
+                    player.sendMessage(plugin.getConfig().getString(Config.CMD_NOPERM));
+                    return false;
+                }
                 // Is an online player that's been mentioned.
                 Player target = Bukkit.getPlayer(args[0]);
                 if(target == player){
@@ -63,12 +77,27 @@ public class spectateCommand implements CommandExecutor, TabCompleter {
                     a.sendMessage(mm.deserialize(plugin.getConfig().getString(Config.IN_USE_SPECTATE)));
                     return false;
                 }else{
+                    Logger.log(player.getName()+" started spectating player "+target.getName());
                     vanishedPlayers.put(player.getUniqueId(), new VanishData(player.getGameMode(), player.getLocation()));
                     player.setGameMode(GameMode.SPECTATOR);
                     a.sendActionBar(mm.deserialize(Objects.requireNonNull(plugin.getConfig().getString(Config.NOW_SPECTATING_SPECTATE)).replaceAll("\\{user}",target.getName())));
                     player.teleport(target.getLocation());
                 }
-            }else{
+            }else if(args[0].equals("exit-here")){
+                if(!player.hasPermission("staffspectate.leavebypass")){
+                    player.sendMessage(plugin.getConfig().getString(Config.CMD_NOPERM));
+                    return false;
+                }
+                VanishData vanishData = vanishedPlayers.get(player.getUniqueId());
+                if (vanishData == null) {
+                    a.sendMessage(mm.deserialize(Objects.requireNonNull(plugin.getConfig().getString(Config.NOT_SPECTATING))));
+                    return false;
+                }
+                Logger.log(player.getName()+" used the exit-here spectate command and was returned to original gamemode at current location ("+player.getLocation().getBlockX()+","+player.getLocation().getBlockY()+","+player.getLocation().getBlockZ()+")");
+                player.setGameMode(vanishData.getGameMode());
+                a.sendMessage(mm.deserialize(Objects.requireNonNull(plugin.getConfig().getString(Config.SPECTATE_END))));
+                vanishedPlayers.remove(player.getUniqueId());
+            } else{
                 a.sendMessage(mm.deserialize(Objects.requireNonNull(plugin.getConfig().getString(Config.NO_USER_SPECTATE))));
             }
         return false;
@@ -78,12 +107,16 @@ public class spectateCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         List<String> arguments = new ArrayList<>();
+
         for(Player all: Bukkit.getOnlinePlayers()){
             if(!all.getName().equals(sender.getName())){
                 arguments.add(all.getName());
             }
         }
         arguments.add("leave");
+        if(sender.hasPermission("staffspectate.leavebypass")){
+            arguments.add("exit-here");
+        }
         return arguments;
     }
 }

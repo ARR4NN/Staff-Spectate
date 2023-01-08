@@ -1,0 +1,71 @@
+
+# -------------------
+# General Settings
+# -------------------
+
+# Should we return the spectator to their original location on leaving spectating.
+# Default: true
+return-to-location: true
+
+# Should we alert admins of new updates?
+# Players with Operator or staffspectate.notify permissions will be notified of updates.
+# Default: true
+notify_updates: true
+
+# Should we keep a log of spectate events?
+# File named logs.txt
+# Default: true
+log-to-file: true
+
+# -------------------
+# LANGUAGE Settings
+# -------------------
+
+# Available colours:
+# black, dark_blue, dark_green, dark_aqua, dark_red, dark_purple, gold, gray, dark_gray, blue, green, aqua, red, light_purple, yellow, or white.
+
+# Hover and click actions also supported:
+# CLICK ACTION: <click:run_command:/say hello>Click to say hello</click>
+# HOVER ACTION: <hover:show_text:'<red>test'>TEST
+
+# More info at: https://docs.adventure.kyori.net/minimessage/format.html#color
+language:
+  commands:
+    # Message sent when the player doesn't have correct permissions.
+    # Default: "<red>You don't have enough permissions to do this!"
+
+    no-permissions: "<red>You don't have enough permissions to do this!"
+
+    spectate:
+      # The message sent when a user tries to spectate themselves.
+
+      self-spectate: "<red>You can't spectate yourself."
+
+      # The message as an action bar when the user spectates someone.
+      # Available placeholders:
+      # {user} = The player they are spectating.
+      # Default: "<green>You are now spectating {user}."
+
+      spectating: "<green>You are now spectating {user}."
+
+      # The message sent when no user was provided in the command.
+
+      no-user: "<red>Please provide a user to spectate! (/spectate <player>)"
+
+      # The message sent when a player is already spectating a user.
+
+      already-spectating: "<red>You need to leave your spectating session to use this!"
+    stopSpectate:
+      # Send when the player stops spectating a player.
+      # Default: "<green>Returned you to your previous location."
+
+      spectate-end: "<green>Returned you to your previous location."
+
+      # Message sent when they try to stop spectating but aren't spectating anyone
+      # Default: "<red>You are not spectating anyone!"
+      not-spectating: "<red>You are not spectating anyone!"
+
+## DON'T TOUCH THIS NUMBER AT ALL
+# IT'S PURPOSELY HIDDEN AT THE BOTTOM OF THE FILE
+config-version: ${config.version}
+plugin-version: ${project.version}

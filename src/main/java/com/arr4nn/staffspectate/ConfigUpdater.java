@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -19,7 +20,7 @@ public final class ConfigUpdater {
     // Lines STARTING WITH these names will be treated as String lists
     private static final String[] LINES_CONTAINING_STRING_LISTS = {};
     // Lines STARTING WITH these names will never get the old value applied
-    private static final String[] LINES_IGNORED = {"config-version:"};
+    private static final String[] LINES_IGNORED = {"config-version:","plugin-version:"};
     // Lines STARTING WITH these names will get no quotes, although they would match one of the lists below
     private static final String[] CONFLICTING_NODES_NEEDING_NO_QUOTES = {};
     // Lines STARTING WITH these names will get their values wrapped in double quotes
@@ -148,7 +149,7 @@ public final class ConfigUpdater {
         logger.info("===========================================");
         logger.info("You are using an outdated config file.");
         logger.info("Your config file will now be updated to the");
-        logger.info("newest version. You changes will be kept.");
+        logger.info("newest version. Your changes will be kept.");
         logger.info("===========================================");
 
         backupCurrentConfig(main);
@@ -162,13 +163,9 @@ public final class ConfigUpdater {
 
             String updatedLine = defaultLine;
 
-            /*if (Daddy.allows(Features.GENERIC)) {
-                if (updatedLine.startsWith("# PREMIUM FEATURE: ONLY AVAILABLE IN AngelChestPlus!")) {
-                    updatedLine = null;
-                }
-            } else*/
-
-            if (defaultLine.startsWith("-") || defaultLine.startsWith(" -") || defaultLine.startsWith("  -")) {
+            if (defaultLine.startsWith("language:")) {
+              // dont replace root parts
+            } else if (defaultLine.startsWith("-") || defaultLine.startsWith(" -") || defaultLine.startsWith("  -")) {
                 debug(logger, "Not including default String list entry: " + defaultLine);
                 updatedLine = null;
             } else if (lineContainsIgnoredNode(defaultLine)) {
@@ -186,8 +183,7 @@ public final class ConfigUpdater {
                     if (defaultLine.startsWith(node + ":")) {
                         // This key from the old file matches this line from the new file! Updating...
                         final String quotes = getQuotes(node);
-                        String value = main.getConfig().get(node).toString();
-
+                        String value = Objects.requireNonNull(main.getConfig().get(node)).toString();
                         // The hologram text needs special escaping for the newline symbols
                         //if (node.equals("hologram-text")) {
                         value = value.replaceAll("\n", "\\\\n");

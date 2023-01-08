@@ -10,6 +10,7 @@ commands:
       - staffspectate
       - spectate
       - sspectate
+      - spec
     permission: staffspectate.use
   ssadmin:
     description: Admin managment of the plugin
@@ -18,3 +19,25 @@ commands:
       - spectateadmin
       - sspectateadmin
     permission: staffspectate.admin
+
+permissions:
+  staffspectate.use:
+    description: "Use the spectate command"
+    children:
+      - staffspectate.spectate
+      - staffspectate.leave
+  staffspectate.admin:
+    description: "Al the admin permissions"
+    children:
+      - staffspectate.notify
+      - staffspectate.leavebypass
+
+  staffspectate.spectate:
+    description: "Start spectating a player"
+  staffspectate.leave:
+    description: "Leave spectator mode."
+
+  staffspectate.notify:
+    description: "Receive update messages"
+  staffspectate.leavebypass:
+    description: "Ability to exit spectator at the current location."
