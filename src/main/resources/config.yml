@@ -7,19 +7,15 @@
 # Default: true
 return-to-location: true
 
-# Should we alert operators of new updates?
+# Should we alert admins of new updates?
+# Players with Operator or staffspectate.notify permissions will be notified of updates.
 # Default: true
-notify_op_updates: true
+notify_updates: true
 
-# -------------------
-# PERMISSIONS Settings
-# -------------------
-
-# The various permissions the plugin will check.
-permissions:
-  # The permission to use /vs spectate
-  # Defualt: "vs.use"
-  use: 'vs.use'
+# Should we keep a log of spectate events?
+# File named logs.txt
+# Default: true
+log-to-file: true
 
 # -------------------
 # LANGUAGE Settings
@@ -35,11 +31,6 @@ permissions:
 # More info at: https://docs.adventure.kyori.net/minimessage/format.html#color
 language:
   commands:
-    # Message sent when the /vs subcommand doesn't exist.
-    # Default: "<red>Unknown subcommand. Use /vs to list commands!"
-
-    unknown-command: "<red>Unknown subcommand. Options: spectate, leave"
-
     # Message sent when the player doesn't have correct permissions.
     # Default: "<red>You don't have enough permissions to do this!"
 
@@ -59,7 +50,11 @@ language:
 
       # The message sent when no user was provided in the command.
 
-      no-user: "<red>Please provide a user to spectate! (/vs spectate <player>)"
+      no-user: "<red>Please provide a user to spectate! (/spectate <player>)"
+
+      # The message sent when a player is already spectating a user.
+
+      already-spectating: "<red>You need to leave your spectating session to use this!"
     stopSpectate:
       # Send when the player stops spectating a player.
       # Default: "<green>Returned you to your previous location."
@@ -72,4 +67,5 @@ language:
 
 ## DON'T TOUCH THIS NUMBER AT ALL
 # IT'S PURPOSELY HIDDEN AT THE BOTTOM OF THE FILE
-config-version: 2.0
+config-version: ${config.version}
+plugin-version: ${project.version}
