@@ -12,6 +12,12 @@ commands:
       - sspectate
       - spec
     permission: staffspectate.use
+  sspov:
+    description: Spectate a player
+    aliases:
+      - spectatepov
+      - specpov
+    permission: staffspectate.use
   ssadmin:
     description: Admin managment of the plugin
     aliases:
@@ -24,6 +30,7 @@ permissions:
   staffspectate.use:
     description: "Use the spectate command"
     children:
+      - staffspectate.povspectate
       - staffspectate.spectate
       - staffspectate.leave
   staffspectate.admin:
@@ -34,6 +41,8 @@ permissions:
 
   staffspectate.spectate:
     description: "Start spectating a player"
+  staffspectate.povspectate:
+    description: "Start POV spectating a player"
   staffspectate.leave:
     description: "Leave spectator mode."
 

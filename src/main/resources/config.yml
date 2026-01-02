@@ -36,6 +36,8 @@ language:
 
     no-permissions: "<red>You don't have enough permissions to do this!"
 
+    player-quit: "<red>The player you were spectating has left the game."
+
     spectate:
       # The message sent when a user tries to spectate themselves.
 

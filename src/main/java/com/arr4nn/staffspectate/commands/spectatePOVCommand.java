@@ -20,13 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.arr4nn.staffspectate.StaffSpectate.povTargets;
 import static com.arr4nn.staffspectate.StaffSpectate.vanishedPlayers;
 
-public class spectateCommand implements CommandExecutor, TabCompleter {
+public class spectatePOVCommand implements CommandExecutor, TabCompleter {
 
     private final StaffSpectate plugin;
 
-    public spectateCommand(StaffSpectate plugin) {
+    public spectatePOVCommand(StaffSpectate plugin) {
         this.plugin = plugin;
     }
 
@@ -64,31 +65,33 @@ public class spectateCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Logger.log(player.getName() + " left spectate.");
+            Logger.log(player.getName() + " left POV spectate.");
 
 // ✅ allow plugin gamemode change
             StaffSpectate.gamemodeBypass.add(player.getUniqueId());
 
-// stop spectating first
+// Stop POV first
             player.setSpectatorTarget(null);
+            povTargets.remove(player.getUniqueId());
 
-// restore state
-            player.teleport(vanishData.getLocation());
-            player.setGameMode(vanishData.getGameMode());
+// Restore location & gamemode
+            player.teleport(vanishedPlayers.get(player.getUniqueId()).getLocation());
+            player.setGameMode(vanishedPlayers.get(player.getUniqueId()).getGameMode());
 
-// show player again
+// Show staff to everyone
             for (Player online : Bukkit.getOnlinePlayers()) {
                 online.showPlayer(plugin, player);
             }
 
-// cleanup
-            StaffSpectate.povTargets.remove(player.getUniqueId());
+// Cleanup
             vanishedPlayers.remove(player.getUniqueId());
 
-            a.sendMessage(mm.deserialize(
+            a.sendMessage(MiniMessage.miniMessage().deserialize(
                 Objects.requireNonNull(plugin.getConfig().getString(Config.SPECTATE_END))
             ));
+
             return true;
+
         }
 
         /* =========================
@@ -108,38 +111,40 @@ public class spectateCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Logger.log(player.getName() + " exited spectate at current location.");
+            Logger.log(player.getName() + " exited POV spectate at current location.");
 
 // ✅ allow plugin gamemode change
             StaffSpectate.gamemodeBypass.add(player.getUniqueId());
 
-// stop spectating
+// Stop POV first
             player.setSpectatorTarget(null);
+            povTargets.remove(player.getUniqueId());
 
-// restore gamemode ONLY (no teleport)
-            player.setGameMode(vanishData.getGameMode());
+// Restore gamemode only (stay at current location)
+            player.setGameMode(vanishedPlayers.get(player.getUniqueId()).getGameMode());
 
-// show player again
+// Show staff to everyone
             for (Player online : Bukkit.getOnlinePlayers()) {
                 online.showPlayer(plugin, player);
             }
 
-// cleanup
-            StaffSpectate.povTargets.remove(player.getUniqueId());
+// Cleanup
             vanishedPlayers.remove(player.getUniqueId());
 
-            a.sendMessage(mm.deserialize(
+            a.sendMessage(MiniMessage.miniMessage().deserialize(
                 Objects.requireNonNull(plugin.getConfig().getString(Config.SPECTATE_END))
             ));
+
             return true;
+
+
         }
 
-
         /* =========================
-           SWITCH TARGET
+           SWITCH POV
            ========================= */
         if (args[0].equalsIgnoreCase("switch")) {
-            if (!player.hasPermission("staffspectate.spectate")) {
+            if (!player.hasPermission("staffspectate.povspectate")) {
                 player.sendMessage(plugin.getConfig().getString(Config.CMD_NOPERM));
                 return true;
             }
@@ -166,9 +171,11 @@ public class spectateCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Logger.log(player.getName() + " switched spectate to " + target.getName());
+            Logger.log(player.getName() + " switched POV spectate to " + target.getName());
+            player.setSpectatorTarget(target);
+            povTargets.put(player.getUniqueId(), target.getUniqueId());
 
-            player.teleport(target.getLocation());
+
 
             a.sendActionBar(mm.deserialize(
                 Objects.requireNonNull(plugin.getConfig().getString(Config.NOW_SPECTATING_SPECTATE))
@@ -178,7 +185,7 @@ public class spectateCommand implements CommandExecutor, TabCompleter {
         }
 
         /* =========================
-           START SPECTATE
+           START POV SPECTATE
            ========================= */
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null || !target.isOnline()) {
@@ -188,7 +195,7 @@ public class spectateCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (!player.hasPermission("staffspectate.spectate")) {
+        if (!player.hasPermission("staffspectate.povspectate")) {
             player.sendMessage(plugin.getConfig().getString(Config.CMD_NOPERM));
             return true;
         }
@@ -212,15 +219,19 @@ public class spectateCommand implements CommandExecutor, TabCompleter {
             new VanishData(player.getGameMode(), player.getLocation())
         );
 
-        Logger.log(player.getName() + " started spectating " + target.getName());
+        povTargets.put(player.getUniqueId(), target.getUniqueId());
 
-        // Hide staff from tab
+
+        Logger.log(player.getName() + " started POV spectating " + target.getName());
+
+        // HIDE FROM TAB LIST
+
         for (Player online : Bukkit.getOnlinePlayers()) {
             online.hidePlayer(plugin, player);
         }
 
         player.setGameMode(GameMode.SPECTATOR);
-        player.teleport(target.getLocation());
+        player.setSpectatorTarget(target);
 
         a.sendActionBar(mm.deserialize(
             Objects.requireNonNull(plugin.getConfig().getString(Config.NOW_SPECTATING_SPECTATE))

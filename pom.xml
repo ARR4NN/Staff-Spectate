@@ -6,7 +6,7 @@
 
     <groupId>com.arr4nn</groupId>
     <artifactId>StaffSpectate</artifactId>
-    <version>3.0</version>
+    <version>5</version>
     <packaging>jar</packaging>
 
     <name>StaffSpectate</name>

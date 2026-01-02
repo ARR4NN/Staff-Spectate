@@ -61,7 +61,7 @@ public final class ConfigUpdater {
     }
 
     /**
-     * Returns the config version of the currently installed AngelChest default config
+     * Returns the config version of the currently installed default config
      *
      * @return default config version
      */

@@ -2,6 +2,7 @@ package com.arr4nn.staffspectate;
 
 import com.arr4nn.staffspectate.commands.spectateAdminCommand;
 import com.arr4nn.staffspectate.commands.spectateCommand;
+import com.arr4nn.staffspectate.commands.spectatePOVCommand;
 import com.jeff_media.updatechecker.UpdateCheckSource;
 import com.jeff_media.updatechecker.UpdateChecker;
 import com.jeff_media.updatechecker.UserAgentBuilder;
@@ -27,6 +28,8 @@ import com.arr4nn.staffspectate.events.Events;
 import java.io.*;
 import java.util.*;
 
+import static com.arr4nn.staffspectate.Logger.plugin;
+
 public final class StaffSpectate extends JavaPlugin {
 
   private static StaffSpectate instance;
@@ -35,6 +38,14 @@ public final class StaffSpectate extends JavaPlugin {
   public final PluginDescriptionFile pdf = this.getDescription();
   public final String version = pdf.getVersion();
   public boolean updateNeeded;
+
+  // spectator UUID -> target UUID
+  public static final Map<UUID, UUID> povTargets = new HashMap<>();
+
+  public static final Set<UUID> gamemodeBypass = new HashSet<>();
+
+  public static final Set<UUID> exitHereBypass = new HashSet<>();
+
 
   private BukkitAudiences adventure;
   public @NotNull BukkitAudiences adventure() {
@@ -70,6 +81,9 @@ public final class StaffSpectate extends JavaPlugin {
     Objects.requireNonNull(getCommand("ss")).setExecutor(new spectateCommand(this));
     Objects.requireNonNull(getCommand("ss")).setTabCompleter(new spectateCommand(this));
 
+    Objects.requireNonNull(getCommand("sspov")).setExecutor(new spectatePOVCommand(this));
+    Objects.requireNonNull(getCommand("sspov")).setTabCompleter(new spectatePOVCommand(this));
+
     Objects.requireNonNull(getCommand("ssadmin")).setExecutor(new spectateAdminCommand(this));
     Objects.requireNonNull(getCommand("ssadmin")).setTabCompleter(new spectateAdminCommand(this));
 
@@ -104,7 +118,7 @@ public final class StaffSpectate extends JavaPlugin {
 
     restoreData();
 
-    getLogger().info("[Staff-Spectate] Plugin Version: "+pluginVersion +" has been enabled!");
+    getLogger().info("[Staff-Spectate] Plugin Version: "+plugin.getDescription().getVersion() +" has been enabled!");
   }
 
   public static File getLogFile() {
